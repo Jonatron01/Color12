@@ -139,7 +139,7 @@
                 booleanArray[data[1]] = true;
                 update();
             }
-            if(cmd == 8 && channel != 10 && channel != 7) {
+            if(cmd == 8 && channel != 10 && channel != 7 || (cmd == 9 && velocity == 0)) {
                 booleanArray[data[1]] = false;
                 update();
             }
