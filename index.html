@@ -130,11 +130,11 @@
             const data = event.data;
             console.log(data)
 
-            if(Math.floor(data[0] / 16 == 9)) {
+            if(Math.floor(data[0] / 16) == 9) {
                 booleanArray[data[1]] = true;
                 update();
             }
-            if(Math.floor(data[0] / 16 == 8)) {
+            if(Math.floor(data[0] / 16) == 8) {
                 booleanArray[data[1]] = false;
                 update();
             }
