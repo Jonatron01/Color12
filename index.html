@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web MIDI API Example</title>
+</head>
+<body>
+    <h1>MIDI Controller Interface</h1>
+    <button id="request-midi-access">Request MIDI Access</button>
+    <div id="midi-status"></div>
+
+    <svg width="750" height="750" viewBox="0 0 200 200">
+        <!-- Loop to create 12 slices -->
+        <g transform="translate(100,100)">
+            <path id="0" d="M 0 0 L 0 -90 A 90 90 0 0 1 46.19 -77.94 Z" fill="#FFFFFF"/>
+            <path id="7" d="M 0 0 L 46.19 -77.94 A 90 90 0 0 1 77.94 -46.19 Z" fill="#FFFFFF"/>
+            <path id="2" d="M 0 0 L 77.94 -46.19 A 90 90 0 0 1 90 0 Z" fill="#FFFFFF"/>
+            <path id="9" d="M 0 0 L 90 0 A 90 90 0 0 1 77.94 46.19 Z" fill="#FFFFFF"/>
+            <path id="4" d="M 0 0 L 77.94 46.19 A 90 90 0 0 1 46.19 77.94 Z" fill="#FFFFFF"/>
+            <path id="11" d="M 0 0 L 46.19 77.94 A 90 90 0 0 1 0 90 Z" fill="#FFFFFF"/>
+            <path id="6" d="M 0 0 L 0 90 A 90 90 0 0 1 -46.19 77.94 Z" fill="#FFFFFF"/>
+            <path id="1" d="M 0 0 L -46.19 77.94 A 90 90 0 0 1 -77.94 46.19 Z" fill="#FFFFFF"/>
+            <path id="8" d="M 0 0 L -77.94 46.19 A 90 90 0 0 1 -90 0 Z" fill="#FFFFFF"/>
+            <path id="3" d="M 0 0 L -90 0 A 90 90 0 0 1 -77.94 -46.19 Z" fill="#FFFFFF"/>
+            <path id="10" d="M 0 0 L -77.94 -46.19 A 90 90 0 0 1 -46.19 -77.94 Z" fill="#FFFFFF"/>
+            <path id="5" d="M 0 0 L -46.19 -77.94 A 90 90 0 0 1 0 -90 Z" fill="#FFFFFF"/>
+
+            <text x="-18.6" y="-64.5" text-anchor="middle" font-size="16" fill="black">F</text>
+            <text x="-50.9" y="-45.9" text-anchor="middle" font-size="16" fill="black">A#</text>
+            <text x="-69.5" y="-13.6" text-anchor="middle" font-size="16" fill="black">D#</text>
+            <text x="-69.5" y="23.6" text-anchor="middle" font-size="16" fill="black">G#</text>
+            <text x="-50.9" y="55.9" text-anchor="middle" font-size="16" fill="black">C#</text>
+            <text x="-18.6" y="74.5" text-anchor="middle" font-size="16" fill="black">F#</text>
+            <text x="18.6" y="74.5" text-anchor="middle" font-size="16" fill="black">B</text>
+            <text x="50.9" y="55.9" text-anchor="middle" font-size="16" fill="black">E</text>
+            <text x="69.5" y="23.6" text-anchor="middle" font-size="16" fill="black">A</text>
+            <text x="69.5" y="-13.6" text-anchor="middle" font-size="16" fill="black">D</text>
+            <text x="50.9" y="-45.9" text-anchor="middle" font-size="16" fill="black">G</text>
+            <text x="18.6" y="-64.5" text-anchor="middle" font-size="16" fill="black">C</text>
+        </g>
+    </svg>
+        </g>
+    </svg>
+
+    <script>
+        let booleanArray = new Array(128).fill(false);
+
+        document.getElementById('request-midi-access').addEventListener('click', () => {
+            if (navigator.requestMIDIAccess) {
+                navigator.requestMIDIAccess()
+                    .then(onMIDISuccess, onMIDIFailure);
+            } else {
+                document.getElementById('midi-status').textContent = "Web MIDI API not supported in this browser.";
+            }
+        });
+
+        function onMIDISuccess(midiAccess) {
+            document.getElementById('midi-status').textContent = "MIDI Access Granted";
+
+            // List all MIDI inputs
+            midiAccess.inputs.forEach((input) => {
+                console.log(`MIDI Input: ${input.name}`);
+                input.onmidimessage = handleMIDIMessage;
+            });
+
+            // List all MIDI outputs
+            midiAccess.outputs.forEach((output) => {
+                console.log(`MIDI Output: ${output.name}`);
+            });
+        }
+
+        function onMIDIFailure() {
+            document.getElementById('midi-status').textContent = "Failed to access MIDI devices.";
+        }
+        function update() {
+            for (let i = 0 ; i < 12 ; i++) {
+                document.getElementById(i).setAttribute('fill', "#FFFFFF");
+            }
+            booleanArray.forEach((value, index) => {
+                if (value) {
+                    let note = index % 12
+                    switch (note) {
+                        case 0:
+                            document.getElementById(note).setAttribute('fill', "#0000FF");
+                            break;
+                        case 1:
+                            document.getElementById(note).setAttribute('fill', "#93FF00");
+                            break;
+                        case 2:
+                            document.getElementById(note).setAttribute('fill', "#FF00FF");
+                            break;
+                        case 3:
+                            document.getElementById(note).setAttribute('fill', "#00FF93");
+                            break;
+                        case 4:
+                            document.getElementById(note).setAttribute('fill', "#FF0000");
+                            break;
+                        case 5:
+                            document.getElementById(note).setAttribute('fill', "#0093FF");
+                            break;
+                        case 6:
+                            document.getElementById(note).setAttribute('fill', "#FFFF00");
+                            break;
+                        case 7:
+                            document.getElementById(note).setAttribute('fill', "#9300FF");
+                            break;
+                        case 8:
+                            document.getElementById(note).setAttribute('fill', "#00FF00");
+                            break;
+                        case 9:
+                            document.getElementById(note).setAttribute('fill', "#FF0093");
+                            break;
+                        case 10:
+                            document.getElementById(note).setAttribute('fill', "#00FFFF");
+                            break;
+                        case 11:
+                            document.getElementById(note).setAttribute('fill', "#FF9300");
+                            break;
+                    }
+
+                }
+            });
+            for (x in booleanArray)
+            if (booleanArray[21]) {
+                console.log("niceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+            }
+        }
+        function handleMIDIMessage(event) {
+            const data = event.data;
+            console.log(data)
+
+            if(data[0] == 144) {
+                booleanArray[data[1]] = true;
+                update();
+            }
+            if(data[0] == 128) {
+                booleanArray[data[1]] = false;
+                update();
+            }
+
+            const cmd = data[0] >> 4;
+            const channel = data[0] & 0xf;
+            const note = data[1];
+            const velocity = data[2];
+
+            //console.log(`MIDI message received: cmd: ${cmd}, channel: ${channel}, note: ${note}, velocity: ${velocity}`);
+        }
+    </script>
+</body>
+</html>
