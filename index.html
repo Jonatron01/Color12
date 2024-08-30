@@ -130,11 +130,11 @@
             const data = event.data;
             console.log(data)
 
-            if(data[0] == 144) {
+            if(data[0] / 16 == 9) {
                 booleanArray[data[1]] = true;
                 update();
             }
-            if(data[0] == 128) {
+            if(data[0] / 16 == 8) {
                 booleanArray[data[1]] = false;
                 update();
             }
