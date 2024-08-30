@@ -130,19 +130,19 @@
             const data = event.data;
             console.log(data)
 
-            if(Math.floor(data[0] / 16) == 9) {
-                booleanArray[data[1]] = true;
-                update();
-            }
-            if(Math.floor(data[0] / 16) == 8) {
-                booleanArray[data[1]] = false;
-                update();
-            }
-
             const cmd = data[0] >> 4;
             const channel = data[0] & 0xf;
             const note = data[1];
             const velocity = data[2];
+
+            if(cmd == 8) {
+                booleanArray[data[1]] = true;
+                update();
+            }
+            if(cmd == 9) {
+                booleanArray[data[1]] = false;
+                update();
+            }
 
             //console.log(`MIDI message received: cmd: ${cmd}, channel: ${channel}, note: ${note}, velocity: ${velocity}`);
         }
